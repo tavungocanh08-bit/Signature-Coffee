@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Signature Coffee — Trung Nguyên (Preview)</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --beige:#F5E6CC;
+    --brown:#D2B48C;
+    --accent:#CDE0D9;
+    --pink:#FADCD9;
+    --text:#4b2e1a;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+    background: linear-gradient(180deg,var(--beige), #fff9f3);
+    color:var(--text);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:22px;
+    min-height:100vh;
+  }
+
+  header{display:flex;flex-direction:column;align-items:center;gap:8px}
+  .logo{width:110px;height:auto}
+  h1{margin:0;font-size:20px;font-weight:600}
+
+  .wrapper{
+    margin-top:12px;
+    display:flex;
+    gap:28px;
+    align-items:flex-start;
+    flex-wrap:wrap;
+    justify-content:center;
+    width:100%;
+    max-width:980px;
+  }
+
+  /* Left: controls */
+  .panel{
+    width:320px;
+    background:rgba(255,255,255,0.95);
+    border:1px solid rgba(210,180,140,0.35);
+    border-radius:14px;
+    padding:16px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.06);
+  }
+  label{display:block;margin-top:10px;font-weight:600;font-size:13px}
+  select,input{width:100%;padding:10px;border-radius:10px;border:1px solid #e6cda8;margin-top:6px;background:#fff9f3;font-size:14px}
+  .row{display:flex;gap:8px;margin-top:10px}
+  button{
+    padding:10px 12px;border-radius:10px;border:none;background:var(--brown);color:#fff;font-weight:600;cursor:pointer;
+  }
+  button.secondary{background:#fff;border:1px solid #e6cda8;color:var(--text)}
+
+  /* Right: preview */
+  .preview-card{
+    width:320px;
+    background:linear-gradient(180deg,#fff,#fffaf3);
+    border-radius:14px;
+    padding:14px;
+    border:1px solid rgba(210,180,140,0.25);
+    box-shadow:0 6px 18px rgba(0,0,0,0.04);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  .cup-stage{position:relative;width:240px;height:320px;border-radius:0 0 60px 60px;background:var(--brown);overflow:hidden;border:6px solid rgba(139,107,79,0.16);box-shadow:inset 0 -12px 30px rgba(0,0,0,0.08)}
+  .liquid{position:absolute;left:0;right:0;bottom:0;height:72%;background:#7b4b2a;border-top-left-radius:80px;border-top-right-radius:80px;transition:background .35s,transform .35s}
+  .foam{position:absolute;left:0;right:0;top:0;height:16%;background:#fff3e0;border-bottom-left-radius:40px;border-bottom-right-radius:40px}
+  .topping-shape{position:absolute;left:50%;transform:translateX(-50%);top:6%;pointer-events:none;transition:opacity .3s,transform .35s}
+  .topping-shape.hidden{opacity:0;transform:translate(-50%, -6px)}
+  .name-badge{position:absolute;top:8px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.8);padding:6px 10px;border-radius:12px;font-weight:600;color:var(--text);font-size:14px;box-shadow:0 4px 14px rgba(0,0,0,0.06)}
+  /* sticker placed */
+  .placed-sticker{position:absolute;cursor:grab;user-select:none;font-size:34px;touch-action:none}
+  .placed-sticker:active{cursor:grabbing}
+
+  /* sticker palette */
+  .stickers-palette{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;justify-content:center}
+  .sticker-btn{width:48px;height:48px;border-radius:10px;background:#fff;border:1px solid #f0d8b8;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer;box-shadow:0 6px 12px rgba(0,0,0,0.04)}
+  .sticker-btn:active{transform:scale(.97)}
+
+  .hint{font-size:12px;color:#6b4b38;margin-top:8px}
+
+  footer{margin-top:18px;font-size:12px;color:#7a5b46}
+  @media (max-width:760px){
+    .wrapper{flex-direction:column;align-items:center}
+  }
+</style>
+</head>
+<body>
+<header>
+  <!-- logo (dùng link public) -->
+  <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/01/Logo-Trung-Nguyen.png" alt="Trung Nguyen" class="logo">
+  <h1>Signature Coffee — Tạo ly cà phê của riêng bạn!</h1>
+</header>
+
+<main class="wrapper">
+  <section class="panel" aria-label="controls">
+    <label for="drinkName">Đặt tên cho ly</label>
+    <input id="drinkName" placeholder="Ví dụ: Monday Boost" />
+
+    <label for="baseSelect">Chọn Base</label>
+    <select id="baseSelect">
+      <option value="#7b4b2a">Cà phê đậm</option>
+      <option value="#b98068">Cà phê sữa</option>
+      <option value="#c9a78b">Latte</option>
+      <option value="#c49b7a">Cappuccino</option>
+      <option value="#3e2723">Cold Brew</option>
+    </select>
+
+    <label for="toppingSelect">Chọn Topping</label>
+    <select id="toppingSelect">
+      <option value="">Không topping</option>
+      <option value="cheese">Kem Cheese</option>
+      <option value="caramel">Caramel</option>
+      <option value="oreo">Oreo</option>
+      <option value="pearls">Trân châu</option>
+      <option value="vanilla">Kem Vanilla</option>
+    </select>
+
+    <div class="row" style="margin-top:12px">
+      <button id="btnPlace">Áp dụng</button>
+      <button class="secondary" id="btnClear">Xóa stickers</button>
+    </div>
+
+    <div class="hint">Kéo sticker từ palette bên dưới vào ly. Double-click sticker để xóa. Hỗ trợ cả cảm ứng.</div>
+
+    <div style="margin-top:14px">
+      <label>Sticker</label>
+      <div class="stickers-palette" id="palette">
+        <div class="sticker-btn" data-emoji="⭐">⭐</div>
+        <div class="sticker-btn" data-emoji="🌈">🌈</div>
+        <div class="sticker-btn" data-emoji="😊">😊</div>
+        <div class="sticker-btn" data-emoji="❤️">❤️</div>
+        <div class="sticker-btn" data-emoji="🍓">🍓</div>
+        <div class="sticker-btn" data-emoji="☕">☕</div>
+      </div>
+    </div>
+
+    <div style="margin-top:14px" class="row">
+      <button id="downloadBtn">Tải ảnh xuống</button>
+      <button id="shareBtn" class="secondary">Chia sẻ (Share API)</button>
+    </div>
+  </section>
+
+  <aside class="preview-card" aria-label="preview">
+    <div id="cup" class="cup-stage" role="img" aria-label="Ly cà phê">
+      <div id="nameBadge" class="name-badge" hidden></div>
+      <div id="toppingShape" class="topping-shape hidden"></div>
+      <div id="liquid" class="liquid"></div>
+      <div class="foam"></div>
+      <!-- stickers will be appended here -->
+    </div>
+    <div style="height:12px"></div>
+    <div id="desc" style="font-size:14px;color:#6b4b38"></div>
+  </aside>
+</main>
+
+<footer>© 2025 Trung Nguyên Legend — Cà phê khởi nguồn sáng tạo</footer>
+
+<!-- html2canvas -->
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script>
+(function(){
+  const cup = document.getElementById('cup');
+  const liquid = document.getElementById('liquid');
+  const toppingShape = document.getElementById('toppingShape');
+  const nameInput = document.getElementById('drinkName');
+  const nameBadge = document.getElementById('nameBadge');
+  const desc = document.getElementById('desc');
+  const baseSelect = document.getElementById('baseSelect');
+  const toppingSelect = document.getElementById('toppingSelect');
+  const palette = document.getElementById('palette');
+  const btnPlace = document.getElementById('btnPlace');
+  const btnClear = document.getElementById('btnClear');
+  const downloadBtn = document.getElementById('downloadBtn');
+  const shareBtn = document.getElementById('shareBtn');
+
+  // topping visuals mapping (use simple SVG/HTML shapes or emoji)
+  function renderToppingVisual(type){
+    toppingShape.className = 'topping-shape hidden';
+    toppingShape.innerHTML = '';
+    if(!type){ toppingShape.classList.add('hidden'); return; }
+    toppingShape.classList.remove('hidden');
+    // create different shapes
+    if(type === 'cheese'){
+      toppingShape.style.width = '160px';
+      toppingShape.style.height = '36px';
+      toppingShape.style.borderRadius = '18px';
+      toppingShape.style.background = '#fff8e2';
+      toppingShape.style.opacity = '0.98';
+    } else if(type === 'caramel'){
+      toppingShape.style.width = '160px';
+      toppingShape.style.height = '26px';
+      toppingShape.style.borderRadius = '14px';
+      toppingShape.style.background = 'linear-gradient(180deg,#ffd98a,#d99a3f)';
+    } else if(type === 'oreo'){
+      // few small circles
+      toppingShape.style.width = '160px';
+      toppingShape.style.height = '36px';
+      toppingShape.style.display = 'flex';
+      toppingShape.style.justifyContent = 'center';
+      toppingShape.style.gap = '6px';
+      for(let i=0;i<5;i++){
+        const d = document.createElement('div');
+        d.style.width='12px'; d.style.height='12px'; d.style.background='#3e2723'; d.style.borderRadius='50%';
+        toppingShape.appendChild(d);
+      }
+    } else if(type === 'pearls'){
+      toppingShape.style.width='120px'; toppingShape.style.height='48px'; toppingShape.style.display='flex'; toppingShape.style.flexWrap='wrap'; toppingShape.style.justifyContent='center'; toppingShape.style.gap='6px';
+      for(let i=0;i<9;i++){ const p=document.createElement('div'); p.style.width='10px'; p.style.height='10px'; p.style.background='#2e1b0f'; p.style.borderRadius='50%'; toppingShape.appendChild(p);}
+    } else if(type === 'vanilla'){
+      toppingShape.style.width='42px'; toppingShape.style.height='42px'; toppingShape.style.borderRadius='50%'; toppingShape.style.background='#fbf0c7';
+    }
+    // animate
+    toppingShape.style.transform = 'translate(-50%, -8px) scale(.98)';
+    requestAnimationFrame(()=> toppingShape.style.transform = 'translate(-50%, 0) scale(1)');
+  }
+
+  // update preview text & colors
+  function updatePreview(){
+    const baseColor = baseSelect.value;
+    liquid.style.background = baseColor;
+    const toppingVal = toppingSelect.value;
+    renderToppingVisual(toppingVal);
+    // name
+    const name = (nameInput.value || '').trim();
+    if(name){ nameBadge.hidden = false; nameBadge.textContent = name } else { nameBadge.hidden = true; }
+    // desc
+    const baseLabel = baseSelect.options[baseSelect.selectedIndex].text;
+    const topLabel = toppingSelect.options[toppingSelect.selectedIndex] ? toppingSelect.options[toppingSelect.selectedIndex].text : '';
+    desc.textContent = topLabel ? `${baseLabel} • ${topLabel}` : `${baseLabel}`;
+    // small pop animation
+    cup.animate([{ transform:'scale(0.995)'},{ transform:'scale(1)'}],{duration:250,easing:'cubic-bezier(.2,.8,.2,1)'})
+  }
+
+  baseSelect.addEventListener('change', updatePreview);
+  toppingSelect.addEventListener('change', updatePreview);
+  nameInput.addEventListener('input', updatePreview);
+  btnPlace.addEventListener('click', updatePreview);
+  btnClear.addEventListener('click', ()=>{
+    // remove stickers
+    Array.from(cup.querySelectorAll('.placed-sticker')).forEach(n => n.remove());
+  });
+
+  // palette drag to create sticker inside cup with pointer events
+  palette.querySelectorAll('.sticker-btn').forEach(btn=>{
+    btn.addEventListener('pointerdown', (ev)=>{
+      ev.preventDefault();
+      const emoji = btn.dataset.emoji;
+      startPlaceSticker(ev, emoji);
+    });
+  });
+
+  // function to place a sticker and allow move after placement
+  function startPlaceSticker(ev, emoji){
+    const rect = cup.getBoundingClientRect();
+    const sticker = document.createElement('div');
+    sticker.className = 'placed-sticker';
+    sticker.textContent = emoji;
+    // initial position centered at pointer
+    const size = 48;
+    sticker.style.left = (ev.clientX - rect.left - size/2) + 'px';
+    sticker.style.top = (ev.clientY - rect.top - size/2) + 'px';
+    sticker.style.fontSize = '36px';
+    cup.appendChild(sticker);
+    // enable dragging of this sticker
+    makeStickerDraggable(sticker);
+    // ensure pointermove/ up for initial drag
+    let shiftX = ev.clientX - (rect.left + parseFloat(sticker.style.left));
+    let shiftY = ev.clientY - (rect.top + parseFloat(sticker.style.top));
+    function onMove(e){
+      sticker.style.left = (e.clientX - rect.left - shiftX) + 'px';
+      sticker.style.top = (e.clientY - rect.top - shiftY) + 'px';
+    }
+    function onUp(){
+      document.removeEventListener('pointermove', onMove);
+      document.removeEventListener('pointerup', onUp);
+    }
+    document.addEventListener('pointermove', onMove);
+    document.addEventListener('pointerup', onUp);
+  }
+
+  // allow moving existing sticker, and double-click to remove
+  function makeStickerDraggable(el){
+    el.addEventListener('pointerdown', function start(e){
+      e.stopPropagation();
+      const rect = cup.getBoundingClientRect();
+      const startLeft = parseFloat(el.style.left || 0);
+      const startTop = parseFloat(el.style.top || 0);
+      const offsetX = e.clientX - (rect.left + startLeft);
+      const offsetY = e.clientY - (rect.top + startTop);
+      function onMove(ev){
+        el.style.left = (ev.clientX - rect.left - offsetX) + 'px';
+        el.style.top = (ev.clientY - rect.top - offsetY) + 'px';
+      }
+      function onUp(){
+        document.removeEventListener('pointermove', onMove);
+        document.removeEventListener('pointerup', onUp);
+        el.removeEventListener('pointerdown', start);
+        // re-bind for next drag
+        makeStickerDraggable(el);
+      }
+      document.addEventListener('pointermove', onMove);
+      document.addEventListener('pointerup', onUp);
+    });
+    // double click to remove
+    el.addEventListener('dblclick', () => el.remove());
+    // long-press (touch) support: tap twice also works
+  }
+
+  // download/share
+  downloadBtn.addEventListener('click', async ()=>{
+    // temporarily remove outline/shadows for cleaner screenshot (optional)
+    const blob = await captureCupBlob();
+    // download
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'signature-drink.png'; document.body.appendChild(a); a.click();
+    a.remove(); URL.revokeObjectURL(url);
+  });
+
+  shareBtn.addEventListener('click', async ()=>{
+    try{
+      const blob = await captureCupBlob();
+      // try Web Share API with files
+      if(navigator.canShare && navigator.canShare({ files: [new File([blob], 'signature.png', {type: blob.type})] })){
+        await navigator.share({ files: [new File([blob], 'signature.png', {type: blob.type})], text: 'My Signature Drink' });
+      } else if(navigator.share){
+        // fallback: create objectURL and share url (may not be allowed)
+        const url = URL.createObjectURL(blob);
+        await navigator.share({ url, text: 'My Signature Drink' }).catch(()=>{ URL.revokeObjectURL(url); throw 0; });
+        URL.revokeObjectURL(url);
+      } else {
+        // final fallback: download and tell user to share manually
+        const url2 = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url2; a.download = 'signature-drink.png'; a.click(); a.remove();
+        URL.revokeObjectURL(url2);
+        alert('Ảnh đã được tải xuống. Bạn có thể chia sẻ thủ công lên Facebook/Instagram.');
+      }
+    }catch(err){
+      console.error(err);
+      alert('Không thể chia sẻ trực tiếp trên thiết bị này. Ảnh sẽ được tải xuống thay thế.');
+      // fallback: download
+      const blob = await captureCupBlob();
+      const url2 = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url2; a.download = 'signature-drink.png'; a.click(); a.remove();
+      URL.revokeObjectURL(url2);
+    }
+  });
+
+  async function captureCupBlob(){
+    // hide nameBadge border/shadow? not necessary
+    const cloneProps = {useCORS:true, backgroundColor: null, scale: 2};
+    const canvas = await html2canvas(cup, cloneProps);
+    return await new Promise(res => canvas.toBlob(res,'image/png'));
+  }
+
+  // initialize with defaults
+  updatePreview();
+
+})();
+</script>
+</body>
+</html>
